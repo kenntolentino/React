@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import Navbar from "../../components/ui/navbar";
@@ -7,8 +7,25 @@ import PrimaryButton from "../../components/ui/PrimaryButton";
 const LandingPage = () => {
   const navigate = useNavigate();
 
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleExplore = () => navigate("/listing");
   const handleOrder = () => navigate("/order");
+
+  const openSidePanel = () => setIsSidePanelOpen(true);
+  const closeSidePanel = () => setIsSidePanelOpen(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  // Prevent scrolling when side panel or modal is open
+  useEffect(() => {
+    const locked = isSidePanelOpen || isModalOpen;
+    document.body.style.overflow = locked ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isSidePanelOpen, isModalOpen]);
 
   const features = [
     {
@@ -29,44 +46,217 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="bg-black min-h-screen w-full font-sans text-gray-300 overflow-x-hidden flex flex-col">
-      <Navbar />
+    <>
 
-      {/* 🏁 Hero Section */}
-      <section className="flex flex-col-reverse md:flex-row items-center justify-between px-6 sm:px-10 md:px-16 lg:px-20 py-20 md:py-32 gap-12 md:gap-20 flex-grow">
-        {/* Left Text Section */}
+      {/* ✅ SIDE PANEL BACKDROP */}
+      {isSidePanelOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-[100] transition-opacity duration-300"
+          onClick={closeSidePanel}
+        />
+      )}
+
+      {/* ✅ DESKTOP SIDE PANEL */}
+      <div
+        className={`hidden md:block fixed top-0 left-0 h-full w-96 bg-gray-900 border-r border-gray-700 shadow-2xl z-[110] overflow-y-auto`}
+        style={{
+          transform: isSidePanelOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 500ms ease-in-out",
+        }}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between p-4 border-b border-gray-800 sticky top-0 bg-gray-900">
+            <h4 className="text-lg font-semibold text-gray-200">Featured Cars</h4>
+            <button
+              onClick={closeSidePanel}
+              className="text-gray-400 hover:text-white text-xl"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="p-4 space-y-4">
+            {/* Car 1 */}
+            <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+              <img
+                src="https://tse1.mm.bing.net/th/id/OIP.BfBpLI8qfkUFqydUHYMO0QHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
+                alt="Rolls Royce Phantom"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-3">
+                <h5 className="text-white font-semibold">Phantom</h5>
+                <p className="text-gray-400 text-sm">The pinnacle of luxury</p>
+              </div>
+            </div>
+
+            {/* Car 2 */}
+            <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+              <img
+                src="https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=300&fit=crop"
+                alt="Rolls Royce Ghost"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-3">
+                <h5 className="text-white font-semibold">Ghost</h5>
+                <p className="text-gray-400 text-sm">Contemporary elegance</p>
+              </div>
+            </div>
+
+            {/* Car 3 */}
+            <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+              <img
+                src="https://images.unsplash.com/photo-1605559424843-9e4c3dec3806?w=400&h=300&fit=crop"
+                alt="Rolls Royce Cullinan"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-3">
+                <h5 className="text-white font-semibold">Cullinan</h5>
+                <p className="text-gray-400 text-sm">Supreme SUV experience</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ✅ MOBILE SIDE PANEL */}
+      <div
+        className={`md:hidden fixed left-0 top-0 h-full w-full sm:w-80 bg-gray-900 border-r border-gray-700 shadow-2xl z-[110] overflow-y-auto`}
+        style={{
+          transform: isSidePanelOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 500ms ease-in-out",
+        }}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-gray-800 sticky top-0 bg-gray-900">
+          <h4 className="text-lg font-semibold text-gray-200">Featured Cars</h4>
+          <button
+            onClick={closeSidePanel}
+            className="text-gray-400 hover:text-white text-xl"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="p-4 space-y-4">
+          {/* Car 1 */}
+          <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+            <img
+              src="https://tse1.mm.bing.net/th/id/OIP.BfBpLI8qfkUFqydUHYMO0QHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
+              alt="Rolls Royce Phantom"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-3">
+              <h5 className="text-white font-semibold">Phantom</h5>
+              <p className="text-gray-400 text-sm">The pinnacle of luxury</p>
+            </div>
+          </div>
+
+          {/* Car 2 */}
+          <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+            <img
+              src="https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=300&fit=crop"
+              alt="Rolls Royce Ghost"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-3">
+              <h5 className="text-white font-semibold">Ghost</h5>
+              <p className="text-gray-400 text-sm">Contemporary elegance</p>
+            </div>
+          </div>
+
+          {/* Car 3 */}
+          <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+            <img
+              src="https://images.unsplash.com/photo-1605559424843-9e4c3dec3806?w=400&h=300&fit=crop"
+              alt="Rolls Royce Cullinan"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-3">
+              <h5 className="text-white font-semibold">Cullinan</h5>
+              <p className="text-gray-400 text-sm">Supreme SUV experience</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-black min-h-screen w-full font-sans text-gray-300 flex flex-col relative">
+      {/* ✅ Navbar: top on desktop, fixed bottom on mobile */}
+      <nav className="md:static md:top-0 w-full flex justify-between items-center px-6 md:px-12 lg:px-20 py-5 bg-white shadow-md md:sticky md:top-0 md:z-50">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          MyCarBrand
+        </h1>
+        <div className="hidden md:flex space-x-6 text-gray-700 font-medium">
+          <a href="#features" className="hover:text-indigo-600 transition-colors">
+            Features
+          </a>
+          <a href="#about" className="hover:text-indigo-600 transition-colors">
+            About
+          </a>
+          <a href="#contact" className="hover:text-indigo-600 transition-colors">
+            Contact
+          </a>
+        </div>
+        <div className="flex gap-3 items-center">
+          <button
+            onClick={openSidePanel}
+            className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
+          >
+            ☰ Menu
+          </button>
+          <button
+            onClick={openModal}
+            className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
+          >
+            Car Modal
+          </button>
+          <PrimaryButton label="Get Started" onClick={() => alert("Get Started!")} />
+        </div>
+      </nav>
+
+      {/* ✅ HERO SECTION */}
+      <section className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between px-6 sm:px-10 md:px-16 lg:px-20 py-20 md:py-32 gap-12 md:gap-20 flex-grow">
         <div className="w-full md:w-1/2 text-left">
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-6 text-gray-100">
             Experience{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-600">
               Luxury
             </span>{" "}
             & Performance
           </h2>
-          <p className="text-gray-500 text-base sm:text-lg mb-10 leading-relaxed max-w-lg">
-            Discover the world of Rolls-Royce where timeless craftsmanship meets
-            cutting-edge engineering. Drive a masterpiece that defines prestige
-            and perfection.
+          <p className="text-gray-400 text-base sm:text-lg mb-10 leading-relaxed max-w-lg">
+            Discover the world of Rolls-Royce — where timeless craftsmanship
+            meets cutting-edge engineering. Drive a masterpiece that defines
+            prestige and perfection.
           </p>
 
-          {/* 🎯 Small Left-Aligned Buttons */}
-          <div className="flex flex-row gap-3">
+          {/* ✅ Buttons */}
+          <div className="flex flex-wrap gap-3 mb-6">
             <PrimaryButton
               label="Explore Models →"
               onClick={handleExplore}
               type="primary"
-              className="text-sm px-4 py-2 sm:px-5 sm:py-2.5"
             />
             <PrimaryButton
               label="Order Now"
               onClick={handleOrder}
               type="secondary"
-              className="text-sm px-4 py-2 sm:px-5 sm:py-2.5"
             />
+          </div>
+
+          {/* ✅ Extra buttons for side panel and modal */}
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={openSidePanel}
+              className="bg-gray-900/80 border border-gray-700 text-gray-200 px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition"
+            >
+              ☰ Open Menu
+            </button>
+            <button
+              onClick={openModal}
+              className="bg-gray-900/80 border border-gray-700 text-gray-200 px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition"
+            >
+              Car Modal
+            </button>
           </div>
         </div>
 
-        {/* Right Image */}
         <div className="w-full md:w-1/2 flex justify-center">
           <img
             src="https://tse1.mm.bing.net/th/id/OIP.BfBpLI8qfkUFqydUHYMO0QHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
@@ -76,10 +266,13 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 🌟 Brand Highlights */}
-      <section className="py-24 border-t border-gray-800 border-b bg-black">
+      {/* ✅ FEATURES */}
+      <section
+        className="relative z-10 py-24 border-t border-gray-800 border-b bg-black"
+        id="features"
+      >
         <div className="text-center mb-14 px-6">
-          <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-300 to-gray-600 bg-clip-text text-transparent uppercase tracking-wide">
+          <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-indigo-300 to-purple-600 bg-clip-text text-transparent uppercase tracking-wide">
             Why Rolls-Royce?
           </h3>
           <p className="text-gray-500 text-base sm:text-lg">
@@ -87,7 +280,6 @@ const LandingPage = () => {
           </p>
         </div>
 
-        {/* 🚘 Metallic Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-6 sm:px-10 md:px-20">
           {features.map((item, index) => (
             <div
@@ -105,17 +297,17 @@ const LandingPage = () => {
                   {item.desc}
                 </p>
               </div>
-
-              {/* ✨ Silver Glow Border */}
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-500 via-gray-300 to-gray-500 opacity-0 group-hover:opacity-20 blur-xl transition-all duration-700" />
             </div>
           ))}
         </div>
       </section>
 
-      {/* 🟣 CTA Section */}
-      <section className="w-full bg-black text-center py-24 px-6 sm:px-10 md:px-20">
-        <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-300 to-gray-600 bg-clip-text text-transparent uppercase">
+      {/* ✅ CALL TO ACTION */}
+      <section
+        className="relative z-10 w-full bg-black text-center py-24 px-6 sm:px-10 md:px-20"
+        id="contact"
+      >
+        <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-indigo-300 to-purple-600 bg-clip-text text-transparent uppercase">
           Drive the Definition of Prestige
         </h3>
         <p className="mb-10 text-base sm:text-lg text-gray-500 max-w-2xl mx-auto">
@@ -129,13 +321,175 @@ const LandingPage = () => {
         />
       </section>
 
-      {/* ⚫ Footer */}
-      <footer className="w-full bg-black text-gray-500 text-center py-8 border-t border-gray-800 px-4 mt-auto">
+      {/* ✅ FOOTER */}
+      <footer className="relative z-10 w-full bg-black text-gray-500 text-center py-8 border-t border-gray-800 px-4 mt-auto">
         <p className="text-sm sm:text-base">
           © 2025 Rolls-Royce Luxury Motors. All rights reserved.
         </p>
       </footer>
+
+      {/* ✅ SIDE PANEL BACKDROP */}
+      {isSidePanelOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-[100] transition-opacity duration-300"
+          onClick={closeSidePanel}
+        />
+      )}
+
+      {/* ✅ DESKTOP SIDE PANEL */}
+      <div
+        className={`hidden md:block fixed top-0 left-0 h-full w-96 bg-gray-900 border-r border-gray-700 shadow-2xl z-[110] overflow-y-auto`}
+        style={{
+          transform: isSidePanelOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 500ms ease-in-out",
+        }}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between p-4 border-b border-gray-800 sticky top-0 bg-gray-900">
+            <h4 className="text-lg font-semibold text-gray-200">Featured Cars</h4>
+            <button
+              onClick={closeSidePanel}
+              className="text-gray-400 hover:text-white text-xl"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="p-4 space-y-4">
+            {/* Car 1 */}
+            <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+              <img
+                src="https://tse1.mm.bing.net/th/id/OIP.BfBpLI8qfkUFqydUHYMO0QHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
+                alt="Rolls Royce Phantom"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-3">
+                <h5 className="text-white font-semibold">Phantom</h5>
+                <p className="text-gray-400 text-sm">The pinnacle of luxury</p>
+              </div>
+            </div>
+
+            {/* Car 2 */}
+            <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+              <img
+                src="https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=300&fit=crop"
+                alt="Rolls Royce Ghost"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-3">
+                <h5 className="text-white font-semibold">Ghost</h5>
+                <p className="text-gray-400 text-sm">Contemporary elegance</p>
+              </div>
+            </div>
+
+            {/* Car 3 */}
+            <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+              <img
+                src="https://images.unsplash.com/photo-1605559424843-9e4c3dec3806?w=400&h=300&fit=crop"
+                alt="Rolls Royce Cullinan"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-3">
+                <h5 className="text-white font-semibold">Cullinan</h5>
+                <p className="text-gray-400 text-sm">Supreme SUV experience</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ✅ MOBILE SIDE PANEL */}
+      <div
+        className={`md:hidden fixed left-0 top-0 h-full w-full sm:w-80 bg-gray-900 border-r border-gray-700 shadow-2xl z-[110] overflow-y-auto`}
+        style={{
+          transform: isSidePanelOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 500ms ease-in-out",
+        }}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-gray-800 sticky top-0 bg-gray-900">
+          <h4 className="text-lg font-semibold text-gray-200">Featured Cars</h4>
+          <button
+            onClick={closeSidePanel}
+            className="text-gray-400 hover:text-white text-xl"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="p-4 space-y-4">
+          {/* Car 1 */}
+          <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+            <img
+              src="https://tse1.mm.bing.net/th/id/OIP.BfBpLI8qfkUFqydUHYMO0QHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
+              alt="Rolls Royce Phantom"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-3">
+              <h5 className="text-white font-semibold">Phantom</h5>
+              <p className="text-gray-400 text-sm">The pinnacle of luxury</p>
+            </div>
+          </div>
+
+          {/* Car 2 */}
+          <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+            <img
+              src="https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=300&fit=crop"
+              alt="Rolls Royce Ghost"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-3">
+              <h5 className="text-white font-semibold">Ghost</h5>
+              <p className="text-gray-400 text-sm">Contemporary elegance</p>
+            </div>
+          </div>
+
+          {/* Car 3 */}
+          <div className="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer">
+            <img
+              src="https://images.unsplash.com/photo-1605559424843-9e4c3dec3806?w=400&h=300&fit=crop"
+              alt="Rolls Royce Cullinan"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-3">
+              <h5 className="text-white font-semibold">Cullinan</h5>
+              <p className="text-gray-400 text-sm">Supreme SUV experience</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ✅ MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-[70]">
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-sm w-full mx-4">
+            <div className="flex items-start justify-between">
+              <h3 className="text-2xl font-bold text-gray-100">Car Models</h3>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-gray-400 mt-3">
+              Browse the latest Rolls-Royce lineup: Phantom, Ghost, Cullinan,
+              and more.
+            </p>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <PrimaryButton
+                label="Explore →"
+                onClick={() => {
+                  closeModal();
+                  handleExplore();
+                }}
+                type="primary"
+              />
+              <PrimaryButton label="Close" onClick={closeModal} type="secondary" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+      </>
   );
 };
 
